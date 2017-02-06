@@ -6,6 +6,15 @@ Qoncrete qoncrete = new Qoncrete.Builder().sourceID("sourceID").apiToken("apiTok
                 .batchSize(1000)
                 .autoSendAfter(2)
                 .build(this);
+// Qoncrete qoncrete = new Qoncrete(this, "sourceID", "apiToken");
 qoncrete.send(json);
 ```
+
+##### API
+
+* send(String string)
+
+* setCallback(Callback callback)
+
+* destroy()
 
