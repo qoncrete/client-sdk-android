@@ -109,7 +109,7 @@ final public class Qoncrete {
             void onResponse(String res, long time) {
                 Log.e(TAG, "onResponse: ");
                 if (apiCallback != null) {
-                    apiCallback.onResponse(0);
+                    apiCallback.onResponse();
                 }
             }
 
@@ -200,7 +200,7 @@ final public class Qoncrete {
     public interface Callback {
         void onFailure();
 
-        void onResponse(long time);
+        void onResponse();
     }
 
     public static final class Builder {
@@ -237,13 +237,13 @@ final public class Qoncrete {
 
         public Builder sourceID(String sourceID) {
             if (sourceID == null) throw new NullPointerException("sourceID == null");
-            this.sourceID = sourceID;
+            this.sourceID = sourceID.toLowerCase();
             return this;
         }
 
         public Builder apiToken(String apiToken) {
             if (apiToken == null) throw new NullPointerException("apiToken == null");
-            this.apiToken = apiToken;
+            this.apiToken = apiToken.toLowerCase();
             return this;
         }
 
