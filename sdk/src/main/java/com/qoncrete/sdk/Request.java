@@ -3,16 +3,16 @@ package com.qoncrete.sdk;
 import android.content.Context;
 import android.util.Log;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import com.qoncrete.okhttp3.Call;
 import com.qoncrete.okhttp3.ConnectionPool;
 import com.qoncrete.okhttp3.MediaType;
 import com.qoncrete.okhttp3.OkHttpClient;
 import com.qoncrete.okhttp3.RequestBody;
 import com.qoncrete.okhttp3.Response;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static android.content.ContentValues.TAG;
 
@@ -21,9 +21,9 @@ import static android.content.ContentValues.TAG;
  */
 
 class Request {
-    private static String URL = "http://www.baidu.com";
-    private static String DOMAIN = "www.baidu.com";
-    //    private static final String URL = "http://192.168.1.6:8978";
+    private static final String DOMAIN = "www.baidu.com";
+    //    private static final String DOMAIN = "192.168.1.5:8990/json";
+    private static String URL = "http://" + DOMAIN;
     private static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
     private OkHttpClient client;
@@ -38,7 +38,8 @@ class Request {
     Request(Context context, boolean secureTransport, boolean cacheDNS, int connectTimeout, int retryOnTimeout, int concurrency) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(connectTimeout, TimeUnit.SECONDS)
-                .connectionPool(new ConnectionPool(concurrency, 5L, TimeUnit.MINUTES));
+                .connectionPool(new ConnectionPool(concurrency, 5L, TimeUnit.MINUTES))
+                .addInterceptor(new RetryInterceptor(retryOnTimeout));
         URL = (secureTransport ? "https://" : "http://") + DOMAIN;
         // TODO 问题：使用代理会异常
         if (cacheDNS) {
@@ -46,16 +47,6 @@ class Request {
             builder.dns(DNSCache.getInstance().HTTP_DNS);
         }
         client = builder.build();
-    }
-
-    // TODO
-    void login(Callback callback) {
-        RequestBody body = RequestBody.create(JSON, "");
-        com.qoncrete.okhttp3.Request request = new com.qoncrete.okhttp3.Request.Builder()
-                .url(URL)
-                .post(body)
-                .build();
-        client.newCall(request).enqueue(callback);
     }
 
     void send(Object obj, Callback callback) {
@@ -76,13 +67,12 @@ class Request {
     void asyncSend(Object obj, Callback callback) {
         com.qoncrete.okhttp3.Request request = buildRequest(obj);
         client.newCall(request).enqueue(callback);
-//        Callback c = new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                super.onFailure(call, e);
-//                this.json
-//            }
-//        };
+    }
+
+    void cancel() {
+        if (client != null) {
+            client.dispatcher().cancelAll();
+        }
     }
 
     private String listToString(List logs) {
@@ -110,6 +100,7 @@ class Request {
         return new com.qoncrete.okhttp3.Request.Builder()
                 .url(URL)
                 .post(body)
+                .tag(System.currentTimeMillis())
                 .build();
     }
 

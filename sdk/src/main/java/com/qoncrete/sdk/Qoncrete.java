@@ -3,11 +3,11 @@ package com.qoncrete.sdk;
 import android.content.Context;
 import android.util.Log;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.qoncrete.okhttp3.Call;
 import com.qoncrete.okhttp3.Response;
+
+import java.io.IOException;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
@@ -93,19 +93,21 @@ final public class Qoncrete {
         reqCallback = new Request.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e(TAG, "onFailure: " + e.toString());
                 onFailure(e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.e(TAG, "onResponse: ");
-                onResponse("res", response.receivedResponseAtMillis() - response.sentRequestAtMillis());
+                if (response != null && response.isSuccessful()) {
+                    onResponse("res", response.receivedResponseAtMillis() - response.sentRequestAtMillis());
+                } else {
+                    onFailure(response == null ? new Exception("un known error") : new Exception("Sever Error"));
+                }
             }
 
             @Override
             void onResponse(String res, long time) {
-                Log.e(TAG, "onResponse2: ");
+                Log.e(TAG, "onResponse: ");
                 if (apiCallback != null) {
                     apiCallback.onResponse(0);
                 }
@@ -113,7 +115,6 @@ final public class Qoncrete {
 
             @Override
             public void onFailure(Exception e) {
-                super.onFailure(e);
                 Log.e(TAG, "onFailure: " + e.toString());
                 if (apiCallback != null) {
                     apiCallback.onFailure();
@@ -151,9 +152,9 @@ final public class Qoncrete {
     }
 
     public void send(String json) {
-        System.out.println("send");
         // 判断是否有网络
         if (!Utils.isNetworkConnected(applicationContext)) {
+            Log.e(TAG, "send。 no net");
             if (apiCallback != null) {
                 apiCallback.onFailure();
             }
@@ -184,6 +185,9 @@ final public class Qoncrete {
     public void destroy() {
         if (polling != null) {
             polling.closeThread();
+        }
+        if (request != null) {
+            request.cancel();
         }
         if (db != null) {
             db.close();
