@@ -21,9 +21,8 @@ import static android.content.ContentValues.TAG;
  */
 
 class Request {
-    private static final String DOMAIN = "www.baidu.com";
-    //    private static final String DOMAIN = "192.168.1.5:8990/json";
-    private static String URL = "http://" + DOMAIN;
+    private static String URL = "%s//log.qoncrete.com/%s?token=%s";
+    //    private static String URL = "%s//192.168.1.5:8990/json/%s?token=%s";
     private static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
     private OkHttpClient client;
@@ -35,13 +34,15 @@ class Request {
      * @param retryOnTimeout  登录超时重发次数 默认 1
      * @param concurrency     并发数 默认 10
      */
-    Request(Context context, boolean secureTransport, boolean cacheDNS, int connectTimeout, int retryOnTimeout, int concurrency) {
+    Request(Context context, String sourceID, String apiToken, boolean secureTransport, boolean cacheDNS, int connectTimeout, int retryOnTimeout, int concurrency) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(connectTimeout, TimeUnit.SECONDS)
                 .connectionPool(new ConnectionPool(concurrency, 5L, TimeUnit.MINUTES))
                 .addInterceptor(new RetryInterceptor(retryOnTimeout));
-        URL = (secureTransport ? "https://" : "http://") + DOMAIN;
-        // TODO 问题：使用代理会异常
+//        URL = (secureTransport ? "https://" : "http://") + DOMAIN;
+        URL = String.format("%s://log.qoncrete.com/%s?token=%s",
+                (secureTransport ? "https" : "http"), sourceID, apiToken);
+        System.out.println(URL);
         if (cacheDNS) {
             DNSCache.init(context);
             builder.dns(DNSCache.getInstance().HTTP_DNS);
@@ -52,15 +53,10 @@ class Request {
     void send(Object obj, Callback callback) {
         com.qoncrete.okhttp3.Request request = buildRequest(obj);
         try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                callback.onResponse(response.body().string(), response.receivedResponseAtMillis() - response.sentRequestAtMillis());
-            } else {
-                callback.onFailure(null, new IOException("Unexpected code " + response));
-            }
+            callback.onResponse(null, client.newCall(request).execute());
         } catch (Exception e) {
             e.printStackTrace();
-            callback.onFailure(e);
+            callback.onFailure(null, new IOException("net error"));
         }
     }
 

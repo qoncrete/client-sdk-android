@@ -89,7 +89,7 @@ final public class Qoncrete {
         this.autoSendAfter = builder.autoSendAfter;
         this.concurrency = builder.concurrency;
 
-        request = new Request(this.applicationContext, this.secureTransport, this.cacheDNS, this.connectTimeout, this.retryOnTimeout, this.concurrency);
+        request = new Request(this.applicationContext, this.sourceID, this.apiToken, this.secureTransport, this.cacheDNS, this.connectTimeout, this.retryOnTimeout, this.concurrency);
         reqCallback = new Request.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -98,10 +98,10 @@ final public class Qoncrete {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if (response != null && response.isSuccessful()) {
+                if (response != null && response.code() == 204) {
                     onResponse("res", response.receivedResponseAtMillis() - response.sentRequestAtMillis());
                 } else {
-                    onFailure(response == null ? new Exception("un known error") : new Exception("Sever Error"));
+                    onFailure(response == null ? new Exception("net error") : new Exception("Sever Error。 code:" + response.code()));
                 }
             }
 
@@ -236,11 +236,13 @@ final public class Qoncrete {
         }
 
         public Builder sourceID(String sourceID) {
+            if (sourceID == null) throw new NullPointerException("sourceID == null");
             this.sourceID = sourceID;
             return this;
         }
 
         public Builder apiToken(String apiToken) {
+            if (apiToken == null) throw new NullPointerException("apiToken == null");
             this.apiToken = apiToken;
             return this;
         }
