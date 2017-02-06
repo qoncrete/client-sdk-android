@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.qoncrete.sdk.demo.MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send Total:"
+        android:layout_marginTop="100dp"
+        android:id="@+id/txt_title" />
+
+    <Button
+        android:text="Stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/btn_start"
+        android:layout_toRightOf="@+id/btn_start"
+        android:layout_toEndOf="@+id/btn_start"
+        android:layout_marginLeft="31dp"
+        android:layout_marginStart="31dp"
+        android:id="@+id/btn_stop" />
+
+    <TextView
+        android:text="Batch Size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:layout_alignBaseline="@+id/edit_batchSize"
+        android:layout_alignBottom="@+id/edit_batchSize"
+        android:layout_alignRight="@+id/switch_ssl"
+        android:layout_alignEnd="@+id/switch_ssl" />
+
+    <TextView
+        android:text="AutoSendAfter (S)"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_batchSize"
+        android:layout_alignLeft="@+id/switch_ssl"
+        android:layout_alignStart="@+id/switch_ssl"
+        android:layout_marginTop="31dp"
+        android:id="@+id/textView2" />
+
+    <EditText
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:singleLine="true"
+        android:layout_alignBaseline="@+id/textView2"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_toRightOf="@+id/btn_start"
+        android:layout_toEndOf="@+id/btn_start"
+        android:id="@+id/edit_autoSendAfter"
+        android:text="2" />
+
+    <Button
+        android:text="Update Setting"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:id="@+id/btn_setting"
+        android:onClick="onClick"
+        android:layout_width="wrap_content"
+        android:textAlignment="center"
+        android:elevation="0dp"
+        android:layout_below="@+id/edit_autoSendAfter"
+        android:layout_alignRight="@+id/switch_autoBatch"
+        android:layout_alignEnd="@+id/switch_autoBatch" />
+
+    <Switch
+        android:text="Auto Batch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/switch_autoBatch"
+        android:layout_marginRight="17dp"
+        android:layout_marginEnd="17dp"
+        android:checked="true"
+        android:layout_above="@+id/edit_batchSize"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <EditText
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:layout_marginTop="24dp"
+        android:id="@+id/edit_batchSize"
+        android:singleLine="true"
+        android:text="1000"
+        android:layout_below="@+id/switch_dns_cache"
+        android:layout_alignLeft="@+id/edit_autoSendAfter"
+        android:layout_alignStart="@+id/edit_autoSendAfter" />
+
+    <Switch
+        android:text="SSL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="41dp"
+        android:id="@+id/switch_ssl"
+        android:checked="false"
+        android:layout_marginRight="11dp"
+        android:layout_marginEnd="11dp"
+        android:layout_below="@+id/txt_title"
+        android:layout_toLeftOf="@+id/switch_dns_cache"
+        android:layout_toStartOf="@+id/switch_dns_cache" />
+
+    <Switch
+        android:text="DNS Cache"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/switch_dns_cache"
+        android:checked="true"
+        android:layout_alignBaseline="@+id/switch_ssl"
+        android:layout_alignBottom="@+id/switch_ssl"
+        android:layout_alignLeft="@+id/txt_total"
+        android:layout_alignStart="@+id/txt_total" />
+
+    <Button
+        android:text="Start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="41dp"
+        android:layout_marginStart="41dp"
+        android:id="@+id/btn_start"
+        android:layout_below="@+id/btn_setting"
+        android:layout_alignLeft="@+id/textView2"
+        android:layout_alignStart="@+id/textView2"
+        android:layout_marginTop="33dp" />
+
+    <TextView
+        android:text="0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="29dp"
+        android:layout_marginStart="29dp"
+        android:id="@+id/txt_total"
+        android:layout_above="@+id/switch_ssl"
+        android:layout_toRightOf="@+id/txt_title"
+        android:layout_toEndOf="@+id/txt_title" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/switch_autoBatch"
+        android:layout_toStartOf="@+id/switch_autoBatch"
+        android:id="@+id/edit_sourceID"
+        android:hint="sourceID" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/edit_apiToken"
+        android:layout_below="@+id/edit_sourceID"
+        android:layout_alignLeft="@+id/edit_sourceID"
+        android:layout_alignStart="@+id/edit_sourceID"
+        android:hint="apiToken" />
+</RelativeLayout>
